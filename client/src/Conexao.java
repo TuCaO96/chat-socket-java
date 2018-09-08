@@ -3,13 +3,13 @@ import java.io.*;
 
 public class Conexao {
 
-  public static void send(Socket socket,String txt)
+  public void send(Socket socket,String txt)
   {
     OutputStream out;
     try {
       out = socket.getOutputStream();
       out.write(txt.getBytes());
-      
+      out.flush();
     }
     catch (Exception e)
     {
@@ -17,7 +17,7 @@ public class Conexao {
     }
   } 
   
-  public static String receive(Socket socket)
+  public String receive(Socket socket)
   {
     InputStream in;
     int bt;
@@ -28,13 +28,13 @@ public class Conexao {
     {
       in = socket.getInputStream();
       bt = in.read(btxt);
-      
+
       if (bt > 0)
       {
         txt = new String(btxt);
         txt = txt.substring(0,bt);
       }
-    } 
+    }
     catch(Exception e)
     {
       System.out.println("Excecao na leitura do InputStream: "+e);

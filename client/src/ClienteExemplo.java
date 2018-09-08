@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 
 
-public class ClienteExemplo {
+public class ClienteExemplo extends Thread{
 
   static Conexao c;
   static Socket socket;
@@ -10,7 +10,7 @@ public class ClienteExemplo {
   public ClienteExemplo()
   {
     try {
-      socket = new Socket("10.1.1.10",9600);
+      socket = new Socket("127.0.0.1",9600);
     }
     catch (Exception e)
     {
@@ -21,37 +21,49 @@ public class ClienteExemplo {
     @SuppressWarnings("static-access")
   public static void main(String args[])
   {
-     String msg;
-     String texto;
-     new ClienteExemplo();
-     
-     c = new Conexao();
-     
-     // DataInputStream in = new DataInputStream(System.in);
-     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+      try{
+          BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+          String msg;
+          c = new Conexao();
+          msg = in.readLine();
+          c.send(socket, msg);
+          Thread thread = new ClienteExemplo();
+          thread.start();
 
-     // fica num loop de 5 mensagens
-     for(int i=0;i<5;i++)
-     {
-     	try{
-     		msg = in.readLine();
-     		c.send(socket,msg);
-     		texto = c.receive(socket);
-     		System.out.println(texto);
-     	}catch(Exception e)
-     	{
-     		System.out.println("Erro na leitura "+e.getMessage());
-     	}
-     	
-     }
-     
-     
-     try {
-       socket.close(); }
-     catch (Exception e) {
-       System.out.println("Nao desconectei..."+e);
-     }
-     
-     
+          while(true){
+              msg = in.readLine();
+              c.send(socket, msg);
+          }
+
+      }catch (IOException e){
+          System.out.println(e.getMessage());
+      }
   }
+
+    @Override
+    public void run() {
+        try {
+            // DataInputStream in = new DataInputStream(System.in);
+            String texto;
+
+            while (true)
+            {
+                try{
+                    texto = c.receive(socket);
+                    System.out.println(texto);
+
+                    if(texto.equals("/q")){
+                        socket.close();
+                    }
+                }catch(Exception e)
+                {
+                    System.out.println("Erro na leitura "+e.getMessage());
+                }
+
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Olha o que houve: "+ e.getMessage());
+        }
+    }
 }
