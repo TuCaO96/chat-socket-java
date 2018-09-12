@@ -28,13 +28,13 @@ public class Main {
             Conexao conexao = new Conexao();
             clients = new ArrayList<>();
             
-            ServerSocket server = new ServerSocket(9600, 5);
+            ServerSocket server = new ServerSocket(9600, 15);
 
             while (true) {
                 Socket socket = server.accept();
                 System.out.println("Porta: " + socket.getLocalPort() + " "
                         + socket.getPort());
-                conexao.send(socket, "Qual seu nickname?");
+                conexao.send(socket, "Olá, Bem Vindo ao Chat!\nQual seu nickname ?");
                 String nickname = conexao.receive(socket);
                 ServerClient client = new ServerClient(socket, nickname);
                 clients.add(client);

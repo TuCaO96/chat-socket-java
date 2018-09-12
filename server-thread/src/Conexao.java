@@ -27,7 +27,6 @@ public class Conexao {
                 try{
                     out = socket.getOutputStream();
                     out.write(txt.getBytes());
-                    out.flush();
                 }
                 catch (IOException e){System.out.println(e.getMessage());}
             }

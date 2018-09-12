@@ -6,11 +6,12 @@ public class ClienteExemplo extends Thread{
 
   static Conexao c;
   static Socket socket;
- 
+  private static boolean conectado = true;
+
   public ClienteExemplo()
   {
     try {
-      socket = new Socket("127.0.0.1",9600);
+      socket = new Socket("localhost",9600);
     }
     catch (Exception e)
     {
@@ -25,14 +26,19 @@ public class ClienteExemplo extends Thread{
           BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
           String msg;
           c = new Conexao();
+          System.out.println("Precione a tecla enter para se conectar com o chat.");
           msg = in.readLine();
           c.send(socket, msg);
           Thread thread = new ClienteExemplo();
           thread.start();
 
-          while(true){
+          while(conectado){
               msg = in.readLine();
               c.send(socket, msg);
+              if(msg.equals("/q")){
+                  socket.close();
+                  conectado = false;
+              }
           }
 
       }catch (IOException e){
@@ -46,15 +52,11 @@ public class ClienteExemplo extends Thread{
             // DataInputStream in = new DataInputStream(System.in);
             String texto;
 
-            while (true)
+            while (conectado)
             {
                 try{
                     texto = c.receive(socket);
                     System.out.println(texto);
-
-                    if(texto.equals("/q")){
-                        socket.close();
-                    }
                 }catch(Exception e)
                 {
                     System.out.println("Erro na leitura "+e.getMessage());

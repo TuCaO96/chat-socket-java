@@ -9,11 +9,10 @@ public class Conexao {
     try {
       out = socket.getOutputStream();
       out.write(txt.getBytes());
-      out.flush();
     }
     catch (Exception e)
     {
-      System.out.println("Deu pau no OutputStream");
+      //System.out.println("Deu pau no OutputStream");
     }
   } 
   
